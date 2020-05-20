@@ -1,0 +1,91 @@
+:root {
+  --ratio: 1.4;
+  --measure: 55ch;
+  --s-4: calc(var(--s-3) / var(--ratio));
+  --s-3: calc(var(--s-2) / var(--ratio));
+  --s-2: calc(var(--s-1) / var(--ratio));
+  --s-1: calc(var(--s0) / var(--ratio));
+  --s0: 1rem;
+  --s1: calc(var(--s0) * var(--ratio));
+  --s2: calc(var(--s1) * var(--ratio));
+  --s3: calc(var(--s2) * var(--ratio));
+  --s4: calc(var(--s3) * var(--ratio));
+  --s5: calc(var(--s4) * var(--ratio));
+  --s6: calc(var(--s5) * var(--ratio));
+  --s7: calc(var(--s6) * var(--ratio));
+  --s8: calc(var(--s7) * var(--ratio));
+  font-size: calc(0.33vw + 1em);
+  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+
+body {
+  font-size: var(--s1);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+main {
+  margin-left: var(--s0);
+  margin-right: var(--s0);
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+form > * {
+  flex-grow: 1;
+}
+form > input {
+  flex-basis: 0;
+  flex-grow: 999;
+  min-width: 50%;
+}
+
+input {
+  border: 4px solid black;
+  padding: var(--s-4) var(--s0);
+}
+
+button {
+  cursor: pointer;
+  border: 4px solid black;
+  font-weight: 700;
+  background: black;
+  color: white;
+  padding: var(--s-4) var(--s0);
+}
+
+main > * + * {
+  margin-top: var(--s0);
+}
+
+#result {
+  font-weight: 900;
+  background: black;
+  color: white;
+  line-height: 1.2;
+  font-size: var(--s3);
+}
+#result.success {
+  font-size: var(--s5);
+}
+
+.visually-hidden {
+  display: block;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px 1px 1px 1px);
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(1px);
+  white-space: nowrap;
+  position: absolute;
+}
+
+small {
+  font-size: var(--s0);
+  font-weight: normal;
+}
