@@ -8,6 +8,7 @@ const note = document.getElementById("note");
 const urlParams = new URLSearchParams(window.location.search);
 const name = urlParams.get("name");
 if (name) {
+  window.history.replaceState({}, document.title, "/");
   input.value = name;
 }
 
@@ -20,11 +21,11 @@ form.addEventListener("submit", e => {
   note.innerHTML = "";
   result.classList.remove("success");
   fetch(
-    "https://fr.wikipedia.org/w/api.php?action=query&list=prefixsearch&utf8=&format=json&origin=*&pslimit=5&pssearch=" +
+    "https://fr.wikipedia.org/w/api.php?action=query&list=search&utf8=&format=json&origin=*&srlimit=7&srsearch=intitle:" +
       encodeURIComponent(value)
   )
     .then(body => body.json())
-    .then(response => response.query.prefixsearch)
+    .then(response => response.query.search)
     .then(results => {
       if (results.length === 0) {
         button.disabled = false;
@@ -32,7 +33,6 @@ form.addEventListener("submit", e => {
         result.innerHTML = "Aucune idée !";
       } else {
         const match = results[0];
-        console.log(results);
         fetch(
           "https://fr.wikipedia.org/w/api.php?action=parse&origin=*&page=" +
             match.title +
