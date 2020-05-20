@@ -3,6 +3,13 @@ const input = document.getElementById("input");
 const button = document.getElementById("button");
 const error = document.getElementById("error");
 const result = document.getElementById("result");
+const note = document.getElementById("note");
+
+const urlParams = new URLSearchParams(window.location.search);
+const name = urlParams.get("name");
+if (name) {
+  input.value = name;
+}
 
 form.addEventListener("submit", e => {
   e.preventDefault();
@@ -10,9 +17,10 @@ form.addEventListener("submit", e => {
   button.classList.add("loading");
   button.disabled = true;
   result.innerHTML = "";
+  note.innerHTML = "";
   result.classList.remove("success");
   fetch(
-    "https://fr.wikipedia.org/w/api.php?action=query&list=prefixsearch&utf8=&format=json&origin=*&pssearch=" +
+    "https://fr.wikipedia.org/w/api.php?action=query&list=prefixsearch&utf8=&format=json&origin=*&pslimit=5&pssearch=" +
       encodeURIComponent(value)
   )
     .then(body => body.json())
@@ -23,14 +31,16 @@ form.addEventListener("submit", e => {
         button.classList.remove("loading");
         result.innerHTML = "Aucune idée !";
       } else {
-        const result = results[0];
+        const match = results[0];
+        console.log(results);
         fetch(
           "https://fr.wikipedia.org/w/api.php?action=parse&origin=*&page=" +
-            result.title +
+            match.title +
             "&prop=text&formatversion=2&format=json"
         )
           .then(body => body.json())
           .then(response => {
+            console.log(response);
             button.classList.remove("loading");
             button.disabled = false;
             const parser = new DOMParser();
@@ -42,22 +52,33 @@ form.addEventListener("submit", e => {
             const bday = doc.documentElement.querySelector(".bday");
             if (bday === null) {
               //probably not a person
-              document.getElementById("result").innerHTML =
-                "Aucune idée ! <small>(est-ce bien une personnalité ?)</small>";
+              result.innerHTML =
+                "<div>Aucune idée ! <small>(est-ce bien une personnalité ?)</small></div>";
+              if (results.length > 1) {
+                note.innerHTML = `<div><h2>Suggestions :</h2><ul class="suggestions">${suggestions(
+                  results.slice(1)
+                )}</ul></div>`;
+              }
               return;
             }
-            let result;
+            let resultString;
             if (dday === null) {
-              result = "Pas mort·e !";
-              document.getElementById("result").classList.add("success");
+              resultString = "Pas mort·e !";
+              result.classList.add("success");
             } else {
-              result = "Mort·e le " + formatDate(dday.getAttribute("datetime"));
+              resultString =
+                "Mort·e le " + formatDate(dday.getAttribute("datetime"));
             }
-            document.getElementById("result").innerHTML = result;
+            result.innerHTML = resultString;
           });
       }
     });
 });
+
+const suggestions = results =>
+  results
+    .map(match => `<li><a href="/?name=${match.title}">${match.title}</a></li>`)
+    .join("");
 
 const formatDate = value => {
   const date = new Date(value);

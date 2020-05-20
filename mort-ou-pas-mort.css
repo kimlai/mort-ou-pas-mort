@@ -83,7 +83,7 @@ button.loading:after {
 }
 
 main > * + * {
-  margin-top: var(--s0);
+  margin-top: var(--s1);
 }
 
 #result {
@@ -96,6 +96,18 @@ main > * + * {
 }
 #result.success {
   font-size: var(--s5);
+}
+#note {
+  font-size: var(--s0);
+}
+#note > * {
+  display: flex;
+  align-items: baseline;
+}
+#note h2 {
+  font-size: var(--s0);
+  font-weight: bold;
+  margin-right: var(--s0);
 }
 
 .visually-hidden {
