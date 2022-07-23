@@ -40,7 +40,6 @@ form.addEventListener("submit", e => {
         )
           .then(body => body.json())
           .then(response => {
-            console.log(response);
             button.classList.remove("loading");
             button.disabled = false;
             const parser = new DOMParser();
@@ -63,7 +62,15 @@ form.addEventListener("submit", e => {
             }
             let resultString;
             if (dday === null) {
-              resultString = "Pas mort·e !";
+              resultString = "Pas mort·e&nbsp!";
+              try {
+                const age = calculateAge(new Date(bday.getAttribute("datetime")));
+                if (age) {
+                  resultString += ` <span class="age">(${age}&nbspans)</span>`;
+                }
+              } catch (error) {
+                console.error("Could not calculate their age", error);
+              }
               result.classList.add("success");
             } else {
               resultString =
@@ -98,3 +105,10 @@ const formatDate = value => {
   ];
   return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
 };
+
+// https://stackoverflow.com/questions/4060004/calculate-age-given-the-birth-date-in-the-format-yyyymmdd
+const calculateAge = birthday  => { // birthday is a date
+  const ageDifMs = Date.now() - birthday.getTime();
+  const ageDate = new Date(ageDifMs); // miliseconds from epoch
+  return Math.abs(ageDate.getUTCFullYear() - 1970);
+}

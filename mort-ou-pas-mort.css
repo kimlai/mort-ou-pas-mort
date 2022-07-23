@@ -95,7 +95,10 @@ main > * + * {
   text-align: center;
 }
 #result.success {
-  font-size: var(--s5);
+  font-size: var(--s4);
+}
+#result .age {
+  font-size: var(--s2);
 }
 #note {
   font-size: var(--s0);
