@@ -25,14 +25,18 @@ form.addEventListener("submit", e => {
       encodeURIComponent(value)
   )
     .then(body => body.json())
-    .then(response => response.query.search)
+    .then(response => response.query)
     .then(results => {
-      if (results.length === 0) {
+      if (results.search.length === 0) {
         button.disabled = false;
         button.classList.remove("loading");
         result.innerHTML = "Aucune idée !";
+        if (results.searchinfo.suggestion) {
+          const suggestion = results.searchinfo.suggestion.match(/.+:(.+)$/)[1];
+          note.innerHTML = `<p>Essayez avec&nbsp;<a href="/?name=${suggestion}">${suggestion}</a></p>`;
+        }
       } else {
-        const match = results[0];
+        const match = results.search[0];
         fetch(
           "https://fr.wikipedia.org/w/api.php?action=parse&origin=*&page=" +
             match.title +
@@ -53,9 +57,9 @@ form.addEventListener("submit", e => {
               //probably not a person
               result.innerHTML =
                 "<div>Aucune idée ! <small>(est-ce bien une personnalité ?)</small></div>";
-              if (results.length > 1) {
+              if (results.search.length > 1) {
                 note.innerHTML = `<div><h2>Suggestions :</h2><ul class="suggestions">${suggestions(
-                  results.slice(1)
+                  results.search.slice(1)
                 )}</ul></div>`;
               }
               return;
